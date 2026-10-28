@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/common/providers/theme_provider.dart';
 import 'package:flutter_grocery/features/home/widgets/category_page_widget.dart';
 import 'package:flutter_grocery/features/home/widgets/category_shimmer_widget.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/features/category/providers/category_provider.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/common/widgets/custom_image_widget.dart';
@@ -22,93 +24,174 @@ class CategoryWidget extends StatefulWidget {
 class _CategoryWidgetState extends State<CategoryWidget> {
   ScrollController scrollController = ScrollController();
 
-
-
   @override
   Widget build(BuildContext context) {
     final SplashProvider splashProvider = Provider.of<SplashProvider>(context, listen: false);
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).darkTheme;
 
     return Consumer<CategoryProvider>(builder: (context, categoryProvider, child) {
-      return categoryProvider.categoryList == null ? const CategoriesShimmerWidget() : (categoryProvider.categoryList?.isNotEmpty ?? false) ? Column(children: [
+      if (categoryProvider.categoryList == null) {
+        return const CategoriesShimmerWidget();
+      }
+      if (categoryProvider.categoryList?.isEmpty ?? true) {
+        return const SizedBox();
+      }
 
-        TitleWidget(title: getTranslated('popular_categories', context)),
+      if (ResponsiveHelper.isDesktop(context)) {
+        return Column(
+          children: [
+            TitleWidget(
+              title: getTranslated('popular_categories', context),
+              onTap: () => RouteHelper.getAllCategoryScreen(),
+            ),
+            CategoryWebWidget(scrollController: scrollController),
+          ],
+        );
+      }
 
-        ResponsiveHelper.isDesktop(context) ? CategoryWebWidget(scrollController: scrollController) : GridView.builder(
-          itemCount: (categoryProvider.categoryList?.length ?? 0) > 7 ? 8 : categoryProvider.categoryList?.length,
-          padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: ResponsiveHelper.isMobilePhone() ? 4 : ResponsiveHelper.isTab(context) ? 4 :3,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 0.7,
-          ),
-          itemBuilder: (context, index) {
-            return Center(
-              child: InkWell(
-                onTap: () {
-                  if (index == 7) {
-                    ResponsiveHelper.isMobilePhone() ? splashProvider.setPageIndex(1) : const SizedBox();
-                    ResponsiveHelper.isWeb() ? RouteHelper.getAllCategoryScreen() : const SizedBox();
+      final categories = categoryProvider.categoryList!;
+      final bool canExpand = categories.length <= 4;
 
-                  } else {
-                    categoryProvider.onChangeSelectIndex(-1,notify: false);
-
-                    RouteHelper.getCategoryProductsRoute(
-                      categoryId: '${categoryProvider.categoryList![index].id}',
-                      categoryName: '${categoryProvider.categoryList![index].name}'
-                    );
-                  }
-                },
-                child: Column(children: [
-                  Expanded(flex: 6, child: Container(
-                    margin: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).cardColor,
-                    ),
-                    child: index != 7 ? Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(40),
-                        child: CustomImageWidget(
-                          image: '${splashProvider.baseUrls?.categoryImageUrl}/${categoryProvider.categoryList?[index].image}',
-                          fit: BoxFit.cover, height: 70, width: 70,
+      return Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeSmall,
+          vertical: Dimensions.paddingSizeExtraSmall,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeDefault,
+          vertical: Dimensions.paddingSizeDefault,
+        ),
+        decoration: BoxDecoration(
+          color: isDarkTheme ? Theme.of(context).cardColor : ColorResources.categoryBgLight,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Shop by Category',
+                  style: poppinsBold.copyWith(
+                    fontSize: Dimensions.fontSizeLarge,
+                    color: isDarkTheme ? Theme.of(context).textTheme.bodyLarge?.color : const Color(0xFF004B4B),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    if (ResponsiveHelper.isMobilePhone()) {
+                      splashProvider.setPageIndex(1);
+                    } else {
+                      RouteHelper.getAllCategoryScreen();
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          getTranslated('view_all', context),
+                          style: poppinsMedium.copyWith(
+                            fontSize: Dimensions.fontSizeSmall,
+                            color: isDarkTheme ? Theme.of(context).primaryColor : const Color(0xFF004B4B),
+                          ),
                         ),
-                      ),
-                    ) : Container(
-                      height: 70, width: 70,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      alignment: Alignment.center,
-                      child: Text('${(categoryProvider.categoryList?.length ?? 0) - 7}+', style: poppinsRegular.copyWith(color: Theme.of(context).cardColor)),
-                    ),
-                  )),
-
-                  Expanded(
-                    flex: ResponsiveHelper.isDesktop(context) ? 3 : 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                      child: Text(
-                        index != 7 ? categoryProvider.categoryList![index].name! : getTranslated('view_all', context),
-                        style: poppinsRegular,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 14,
+                          color: isDarkTheme ? Theme.of(context).primaryColor : const Color(0xFF004B4B),
+                        ),
+                      ],
                     ),
                   ),
-                ]),
-              ),
-            );
-          },
-        ),
-      ]) : const SizedBox();
+                ),
+              ],
+            ),
+            const SizedBox(height: Dimensions.paddingSizeDefault),
 
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: Row(
+                      mainAxisAlignment: canExpand ? MainAxisAlignment.spaceAround : MainAxisAlignment.start,
+                      children: categories.map((category) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: canExpand ? 0 : 8),
+                          child: InkWell(
+                            onTap: () {
+                              categoryProvider.onChangeSelectIndex(-1, notify: false);
+                              RouteHelper.getCategoryProductsRoute(
+                                categoryId: '${category.id}',
+                                categoryName: '${category.name}',
+                              );
+                            },
+                            child: SizedBox(
+                              width: 76,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    height: 68,
+                                    width: 68,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.05),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: ClipOval(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: CustomImageWidget(
+                                            image: '${splashProvider.baseUrls?.categoryImageUrl}/${category.image}',
+                                            fit: BoxFit.contain,
+                                            height: 56,
+                                            width: 56,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    category.name ?? '',
+                                    style: poppinsMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeSmall,
+                                      color: isDarkTheme ? Theme.of(context).textTheme.bodyLarge?.color : const Color(0xFF004B4B),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      );
     });
   }
 }
+
 

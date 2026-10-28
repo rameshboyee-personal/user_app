@@ -20,11 +20,11 @@ class ColorResources {
   }
 
   static Color getCategoryBgColor(BuildContext context) {
-    return Provider.of<ThemeProvider>(context).darkTheme ? const Color(0xFF004B4B) : const Color(0xFFEAF6F5);
+    return Provider.of<ThemeProvider>(context).darkTheme ? const Color(0xFF004B4B) : categoryBgLight;
   }
 
   static Color getAppBarHeaderColor(BuildContext context) {
-    return Provider.of<ThemeProvider>(context).darkTheme ? const Color(0xFF004B4B) : const Color(0xFFEAF6F5);
+    return Provider.of<ThemeProvider>(context).darkTheme ? const Color(0xFF004B4B) : headerYellow;
   }
 
   static Color getChatAdminColor(BuildContext context) {
@@ -36,6 +36,8 @@ class ColorResources {
   }
 
   // Updated palette constant tokens
+  static const Color headerYellow = Color(0xFFFED615);
+  static const Color categoryBgLight = Color(0xFFE1F2E8);
   static const Color primaryDeepTeal = Color(0xFF006B6B);
   static const Color primaryDarkOcean = Color(0xFF004B4B);
   static const Color secondaryOceanBlue = Color(0xFF007C91);

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/common/widgets/custom_button_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_pop_scope_widget.dart';
 import 'package:flutter_grocery/features/menu/domain/models/custom_drawer_controller_model.dart';
@@ -76,7 +78,12 @@ class _MainScreenState extends State<MainScreen> {
                       appBar: ResponsiveHelper.isDesktop(context) ?
                       null :
                       AppBar(
-                        backgroundColor: Theme.of(context).cardColor,
+                        backgroundColor: isDarkTheme ? Theme.of(context).cardColor : ColorResources.headerYellow,
+                        systemOverlayStyle: SystemUiOverlayStyle(
+                          statusBarColor: isDarkTheme ? Theme.of(context).cardColor : ColorResources.headerYellow,
+                          statusBarIconBrightness: isDarkTheme ? Brightness.light : Brightness.dark,
+                          statusBarBrightness: isDarkTheme ? Brightness.dark : Brightness.light,
+                        ),
                         leading: IconButton(
                           icon: Image.asset(Images.moreIcon, color: Theme.of(context).primaryColor, height: 30, width: 30),
                           onPressed: () {
@@ -108,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
 
                           IconButton(
                             icon: Stack(clipBehavior: Clip.none, children: [
-                              Icon(Icons.shopping_cart, color: Theme.of(context).hintColor.withValues(alpha: isDarkTheme ? 0.9 : 0.4), size: 25),
+                              Icon(Icons.shopping_cart, color: isDarkTheme ? Theme.of(context).hintColor.withValues(alpha: 0.9) : Theme.of(context).primaryColor, size: 25),
 
                               Positioned(top: -7, right: -2, child: Container(
                                 padding: const EdgeInsets.all(5),

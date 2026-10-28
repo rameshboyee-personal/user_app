@@ -17,10 +17,12 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
   final bool isElevation;
   final bool fromCategory;
   final Widget? actionView;
+  final Color? bgColor;
 
   const CustomAppBarWidget({
     super.key, required this.title, this.isBackButtonExist = true, this.onBackPressed,
     this.isCenter = true, this.isElevation = false,this.fromCategory = false, this.actionView, this.subTitle,
+    this.bgColor,
   });
 
   @override
@@ -53,7 +55,7 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
           }
         },
       ) : const SizedBox(),
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: bgColor ?? Theme.of(context).cardColor,
       elevation: isElevation ? 2 : 0,
       actions: [
 
