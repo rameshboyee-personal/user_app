@@ -9,8 +9,8 @@ ThemeData light = ThemeData(
   cardColor: const Color(0xFFFFFFFF), // White
   focusColor: const Color(0xFF007C91), // Ocean Blue
   hintColor: const Color(0xFF64777D), // Slate
-  canvasColor: const Color(0xFFFFFDF7), // Warm Cream
-  scaffoldBackgroundColor: const Color(0xFFFFFDF7), // Warm Cream
+  canvasColor: const Color(0xFFFDFCE9), // Warm Cream (#FDFCE9)
+  scaffoldBackgroundColor: const Color(0xFFFDFCE9), // Warm Cream (#FDFCE9)
   shadowColor: const Color(0xFFE2E9EA), // Light Grey (Border)
 
   textTheme: const TextTheme(

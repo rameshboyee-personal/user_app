@@ -102,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       backgroundColor: Theme.of(context).primaryColor,
       child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: ResponsiveHelper.isDesktop(context) ? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget())  : null,
         body: CustomScrollView(controller: scrollController, slivers: [
           SliverToBoxAdapter(child: Center(child: SizedBox(

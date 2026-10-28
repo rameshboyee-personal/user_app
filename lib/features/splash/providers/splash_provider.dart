@@ -21,6 +21,7 @@ import 'package:flutter_grocery/features/menu/screens/setting_screen.dart';
 import 'package:flutter_grocery/features/order/domain/models/offline_payment_model.dart';
 import 'package:flutter_grocery/features/order/screens/order_list_screen.dart';
 import 'package:flutter_grocery/features/order/screens/order_search_screen.dart';
+import 'package:flutter_grocery/features/profile/screens/profile_screen.dart';
 import 'package:flutter_grocery/features/refer_and_earn/screens/refer_and_earn_screen.dart';
 import 'package:flutter_grocery/features/splash/domain/reposotories/splash_repo.dart';
 import 'package:flutter_grocery/features/wallet_and_loyalty/screens/loyalty_screen.dart';
@@ -270,6 +271,7 @@ class SplashProvider extends ChangeNotifier  {
       MainScreenModel(const HtmlViewerScreen(htmlType: HtmlType.refundPolicy), 'refund_policy', Images.refundPolicy, _configModel?.refundPolicyStatus ?? false),
       MainScreenModel(const HtmlViewerScreen(htmlType: HtmlType.cancellationPolicy), 'cancellation_policy', Images.cancellationPolicy, _configModel?.cancellationPolicyStatus ?? false),
       MainScreenModel(const HtmlViewerScreen(htmlType: HtmlType.faq), 'faq', Images.faq, true),
+      MainScreenModel(const ProfileScreen(fromMainScreen: true), 'profile', Images.profile, true),
     ];
   }
 

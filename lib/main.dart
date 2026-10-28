@@ -290,7 +290,9 @@ class _MyAppState extends State<MyApp> {
             data: MediaQuery.of(context).copyWith(
               textScaler: TextScaler.linear(MediaQuery.sizeOf(context).width < 380 ? 0.8 : 1),
             ),
-            child: Scaffold(body: SafeArea(
+            child: Scaffold(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body: SafeArea(
               top: false,
               bottom: !kIsWeb && Platform.isAndroid,
               child: Stack(children: [

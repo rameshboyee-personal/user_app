@@ -42,7 +42,7 @@ class ColorResources {
   static const Color primaryDarkOcean = Color(0xFF004B4B);
   static const Color secondaryOceanBlue = Color(0xFF007C91);
   static const Color accentMustardYellow = Color(0xFFE5A900);
-  static const Color backgroundWarmCream = Color(0xFFFFFDF7);
+  static const Color backgroundWarmCream = Color(0xFFFDFCE9);
   static const Color cardWhite = Color(0xFFFFFFFF);
   static const Color lightSectionSoftTeal = Color(0xFFEAF6F5);
   static const Color mainTextNavyBlack = Color(0xFF163238);

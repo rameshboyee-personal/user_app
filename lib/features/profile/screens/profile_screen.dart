@@ -19,7 +19,8 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool fromMainScreen;
+  const ProfileScreen({super.key, this.fromMainScreen = false});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -44,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final SplashProvider splashProvider = Provider.of<SplashProvider>(context, listen: false);
     return CustomPopScopeHandelDeepLinkWidget(
       child: Scaffold(
-        appBar: ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()): AppBar(
+        appBar: widget.fromMainScreen ? null : (ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()): AppBar(
           backgroundColor: Theme.of(context).cardColor,
           leading: IconButton(
               icon: Image.asset(Images.moreIcon, color: Theme.of(context).primaryColor),
@@ -65,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
           ),
-        ),
+        )) as PreferredSizeWidget?,
         body: SafeArea(
           child: _isLoggedIn ? Consumer<ProfileProvider>(builder: (context, profileProvider, child) {
             return const Padding(

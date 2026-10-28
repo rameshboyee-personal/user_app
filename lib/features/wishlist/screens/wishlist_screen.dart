@@ -40,7 +40,7 @@ class _WishListScreenState extends State<WishListScreen> {
 
     return CustomPopScopeHandelDeepLinkWidget(
       child: Scaffold(
-        appBar: ResponsiveHelper.isMobilePhone()? null: (ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()) : const AppBarBaseWidget()) as PreferredSizeWidget?,
+        appBar: !ResponsiveHelper.isDesktop(context)? null: (ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()) : const AppBarBaseWidget()) as PreferredSizeWidget?,
         body: _isLoggedIn ? Consumer<WishListProvider>(
           builder: (context, wishlistProvider, child) {
             if(wishlistProvider.isLoading) {
