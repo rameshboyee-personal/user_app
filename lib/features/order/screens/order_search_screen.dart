@@ -37,7 +37,9 @@ class _OrderSearchScreenState extends State<OrderSearchScreen> {
 
   @override
   void initState() {
-    countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).code;
+    // Keep only IN (+91 India), commented out rest
+    // countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).code;
+    countryCode = 'IN';
 
     Provider.of<OrderProvider>(context, listen: false).clearPrevData();
     super.initState();

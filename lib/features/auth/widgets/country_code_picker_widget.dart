@@ -115,13 +115,23 @@ class CountryCodePickerWidget extends StatefulWidget {
     this.dialogSize,
     this.dialogBackgroundColor,
     this.closeIcon = const Icon(Icons.close),
-    this.countryList = codes,
+    // Keep only +91 India, commented out all other countries
+    // this.countryList = codes,
+    this.countryList = const [
+      {
+        "name": "India",
+        "code": "IN",
+        "dial_code": "+91",
+      },
+    ],
     super.key,
   });
 
   @override
   // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() {
+    // Keep only +91 India, remaining all country codes commented out
+    /*
     List<Map<String, String>> jsonList = countryList;
 
     List<CountryCode> elements =
@@ -141,6 +151,15 @@ class CountryCodePickerWidget extends StatefulWidget {
           uppercaseCustomList.contains(criteria.dialCode))
           .toList();
     }
+    */
+
+    List<CountryCode> elements = [
+      CountryCode.fromJson({
+        "name": "India",
+        "code": "IN",
+        "dial_code": "+91",
+      }),
+    ];
 
     return CountryCodePickerWidgetState(elements);
   }
@@ -247,6 +266,14 @@ class CountryCodePickerWidgetState extends State<CountryCodePickerWidget> {
   void didUpdateWidget(CountryCodePickerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // Keep only +91 India
+    selectedItem = elements.firstWhere(
+      (criteria) => criteria.code?.toUpperCase() == 'IN' || criteria.dialCode == '+91',
+      orElse: () => elements[0],
+    );
+    _onInit(selectedItem);
+
+    /*
     if (oldWidget.initialSelection != widget.initialSelection) {
       if (widget.initialSelection != null) {
         selectedItem = elements.firstWhere(
@@ -262,12 +289,20 @@ class CountryCodePickerWidgetState extends State<CountryCodePickerWidget> {
       }
       _onInit(selectedItem);
     }
+    */
   }
 
   @override
   void initState() {
     super.initState();
 
+    // Keep only +91 India
+    selectedItem = elements.firstWhere(
+      (item) => item.code?.toUpperCase() == 'IN' || item.dialCode == '+91',
+      orElse: () => elements[0],
+    );
+
+    /*
     if (widget.initialSelection != null) {
       selectedItem = elements.firstWhere(
               (item) =>
@@ -289,6 +324,8 @@ class CountryCodePickerWidgetState extends State<CountryCodePickerWidget> {
         item.name!.toUpperCase() == criteria.toUpperCase()) !=
         null)
         .toList();
+    */
+    favoriteElements = elements;
   }
 
   void showCountryCodePickerWidgetDialog() async {
@@ -350,6 +387,9 @@ class CountryCodePickerWidgetState extends State<CountryCodePickerWidget> {
 
 class CountryPick{
   static String? getCountryCode(String? number) {
+    // Keep only +91 India, commented out all other country codes
+    return '+91';
+    /*
     String? countryCode;
     try{
       countryCode = codes.firstWhere((item) =>
@@ -358,5 +398,6 @@ class CountryPick{
       debugPrint('country error: $error');
     }
     return countryCode;
+    */
   }
 }

@@ -174,7 +174,9 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
 
 
   Future<void> _initLoading() async {
-    countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).code;
+    // Keep only IN (+91 India), commented out rest
+    // countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).code;
+    countryCode = 'IN';
 
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);

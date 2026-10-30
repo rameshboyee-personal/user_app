@@ -49,7 +49,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   void initState() {
-    countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).dialCode;
+    // Keep only +91 India, commented out rest
+    // countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).dialCode;
+    countryCode = '+91';
     Provider.of<AuthProvider>(context, listen: false).updateRegistrationErrorMessage('', false);
 
     if (Provider.of<SplashProvider>(context, listen: false).configModel?.referEarnStatus == true && (widget.referralCode?.isNotEmpty ?? false)) {

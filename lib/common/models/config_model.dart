@@ -287,7 +287,9 @@ class ConfigModel {
     }
     return _currencySymbolPosition;
   }
-  String? get country => _country;
+  // Keep only India (+91), commented out rest
+  // String? get country => _country;
+  String? get country => 'IN';
   DeliveryManagement? get deliveryManagement => _deliveryManagement;
   PlayStoreConfig? get playStoreConfig => _playStoreConfig;
   AppStoreConfig? get appStoreConfig => _appStoreConfig;
@@ -391,7 +393,8 @@ class ConfigModel {
     if (_currencySymbol != '₹' && json['currency_symbol_position'] != null) {
       _currencySymbolPosition = json['currency_symbol_position'];
     }
-    _country = json['country'];
+    // _country = json['country'];
+    _country = 'IN';
     _deliveryManagement = json['delivery_management'] != null
         ? DeliveryManagement.fromJson(json['delivery_management'])
         : null;

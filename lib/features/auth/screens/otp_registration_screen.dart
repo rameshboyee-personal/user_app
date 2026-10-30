@@ -52,7 +52,9 @@ class _OtpRegistrationScreenState extends State<OtpRegistrationScreen> {
     _referCodeController = TextEditingController();
 
     final ConfigModel? configModel = Provider.of<SplashProvider>(context, listen: false).configModel;
-    countryCode ??= CountryCode.fromCountryCode(configModel?.country ?? '').dialCode;
+    // Keep only +91 India, commented out rest
+    // countryCode ??= CountryCode.fromCountryCode(configModel?.country ?? '').dialCode;
+    countryCode ??= '+91';
 
     if(widget.userName != null && widget.userName!.isNotEmpty){
       _nameController?.text = widget.userName!;

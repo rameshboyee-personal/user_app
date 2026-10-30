@@ -408,7 +408,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       _passwordController?.text = userData.password ?? '';
     }else{
-      countryCode ??= CountryCode.fromCountryCode(configModel?.country?? "BD").dialCode;
+      // Keep only +91 India, commented out rest
+      // countryCode ??= CountryCode.fromCountryCode(configModel?.country?? "BD").dialCode;
+      countryCode ??= '+91';
     }
   }
 

@@ -54,7 +54,9 @@ class _SendOtpScreenState extends State<SendOtpScreen> {
       }
       countryCode ??= userData.countryCode;
     }else{
-      countryCode ??= CountryCode.fromCountryCode(configModel.country!).dialCode;
+      // Keep only +91 India, commented out rest
+      // countryCode ??= CountryCode.fromCountryCode(configModel.country!).dialCode;
+      countryCode ??= '+91';
     }
 
   }

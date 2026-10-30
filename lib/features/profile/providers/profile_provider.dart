@@ -30,7 +30,9 @@ class ProfileProvider with ChangeNotifier {
     getTranslated('you_made_your_earning', Get.context!),
   ];
   UserInfoModel? get userInfoModel => _userInfoModel;
-  String? get countryCode => _countryCode;
+  // Keep only +91 India, commented out rest
+  // String? get countryCode => _countryCode;
+  String? get countryCode => _countryCode ?? '+91';
   bool get isLoading => _isLoading;
   PickedFile? get data => _data;
   File? get file => _file;

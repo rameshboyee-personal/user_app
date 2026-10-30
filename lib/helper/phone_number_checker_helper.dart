@@ -33,6 +33,9 @@ class PhoneNumberCheckerHelper{
   }
 
   static String? getCountryCode(String? number) {
+    // Keep only +91 India, commented out all other country codes
+    return '+91';
+    /*
     String? countryCode = '';
     try{
       countryCode = codes.firstWhere((item) =>
@@ -41,6 +44,6 @@ class PhoneNumberCheckerHelper{
       debugPrint('country error: $error');
     }
     return countryCode;
+    */
   }
-
 }
