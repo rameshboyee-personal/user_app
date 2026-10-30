@@ -73,7 +73,44 @@ class _LoginScreenState extends State<LoginScreen> {
           return const SendOtpScreen();
         }else{
           return CustomPopScopeWidget(child: Scaffold(
-            appBar: ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()) : null,
+            appBar: ResponsiveHelper.isDesktop(context)
+                ? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget())
+                : AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    leading: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            RouteHelper.getMainRoute();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xFFE2E9EA).withValues(alpha: 0.8),
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: Color(0xFF004B4B)),
+                        ),
+                      ),
+                    ),
+                    centerTitle: true,
+                  ),
             body: SafeArea(child: CustomScrollView(slivers: [
 
               if(ResponsiveHelper.isDesktop(context)) const SliverToBoxAdapter(child: SizedBox(height: Dimensions.paddingSizeLarge)),
@@ -81,12 +118,27 @@ class _LoginScreenState extends State<LoginScreen> {
               SliverToBoxAdapter(child: Padding(
                 padding: EdgeInsets.all(ResponsiveHelper.isDesktop(context) ? 0 : Dimensions.paddingSizeLarge),
                 child: Center(child: Container(
-                  width: ResponsiveHelper.isMobile() ? width : 500,
-                  padding: !ResponsiveHelper.isMobile() ? const EdgeInsets.symmetric(horizontal: 50,vertical: 50) :  width > 500 ? const EdgeInsets.all(Dimensions.paddingSizeDefault) : null,
-                  decoration: !ResponsiveHelper.isMobile() ? BoxDecoration(
-                    color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: Theme.of(context).shadowColor, blurRadius: 5, spreadRadius: 1)],
-                  ) : null,
+                  width: width > 540 ? 500 : width,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.isDesktop(context) ? 40 : 20,
+                    vertical: 26,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: const Color(0xFFE2E9EA).withValues(alpha: 0.8),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
                   child: Consumer<AuthProvider>(
                     builder: (context, authProvider, child) => Form(key: _formKeyLogin, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       if(!ResponsiveHelper.isDesktop(context))
@@ -116,18 +168,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         selector: (context, authProvider) => authProvider.isNumberLogin,
                         builder: (context, isNumberLogin, child) {
                           return CustomTextFieldWidget(
-
                             countryDialCode: isNumberLogin ? countryCode : null,
                             onCountryChanged: (CountryCode value) => countryCode = value.dialCode,
                             onChanged: (String text) => AuthHelper.identifyEmailOrNumber(text, authProvider),
-
                             hintText: getTranslated('email_phone', context),
                             title: getTranslated('email_phone', context),
                             isShowBorder: true,
+                            isShowPrefixIcon: !isNumberLogin,
+                            prefixIconUrl: Icons.mail_outline_rounded,
                             focusNode: _emailFocus,
                             nextFocus: _passwordFocus,
                             controller: _emailOrPhoneController,
                             inputType: TextInputType.emailAddress,
+                            fillColor: Theme.of(context).brightness == Brightness.dark ? null : const Color(0xFFF9FBFA),
                           );
                         },
                       ),
@@ -138,10 +191,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         title: getTranslated('password', context),
                         isShowBorder: true,
                         isPassword: true,
+                        isShowPrefixIcon: true,
+                        prefixIconUrl: Icons.lock_outline_rounded,
                         isShowSuffixIcon: true,
                         focusNode: _passwordFocus,
                         controller: _passwordController,
                         inputAction: TextInputAction.done,
+                        fillColor: Theme.of(context).brightness == Brightness.dark ? null : const Color(0xFFF9FBFA),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
@@ -215,6 +271,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       CustomButtonWidget(
                         isLoading: authProvider.isLoading,
                         buttonText: getTranslated('sign_in', context),
+                        borderRadius: 25,
+                        height: 48,
+                        backgroundColor: const Color(0xFF004B4B),
+                        textStyle: poppinsBold.copyWith(fontSize: 15, color: Colors.white),
                         onPressed: () async => _login(),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),

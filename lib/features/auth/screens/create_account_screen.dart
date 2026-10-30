@@ -18,6 +18,7 @@ import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
 import 'package:flutter_grocery/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter_grocery/common/widgets/footer_web_widget.dart';
 import 'package:flutter_grocery/common/widgets/web_app_bar_widget.dart';
+import 'package:flutter_grocery/utill/images.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -63,63 +64,155 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Widget build(BuildContext context) {
     final config = Provider.of<SplashProvider>(context, listen: false).configModel!;
     final double width = MediaQuery.of(context).size.width;
+    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
 
     return CustomPopScopeHandelDeepLinkWidget(
       child: Scaffold(
-        appBar: ResponsiveHelper.isDesktop(context)? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget()) :null,
+        appBar: ResponsiveHelper.isDesktop(context)
+            ? const PreferredSize(preferredSize: Size.fromHeight(120), child: WebAppBarWidget())
+            : AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        RouteHelper.getMainRoute();
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFE2E9EA).withValues(alpha: 0.8),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: Color(0xFF004B4B)),
+                    ),
+                  ),
+                ),
+              ),
         body: Consumer<AuthProvider>(builder: (context, authProvider, child) => SafeArea(
           child: CustomScrollView(slivers: [
 
             SliverToBoxAdapter(child: Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.isDesktop(context) ? 0 : 16,
+                vertical: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeLarge : 8,
+              ),
               child: Center(child: Column(children: [
                 Container(
-                  width: width > 700 ? 700 : width,
-                  padding: ResponsiveHelper.isDesktop(context)
-                      ? const EdgeInsets.symmetric(horizontal: 50,vertical: 50) : width > 700
-                      ? const EdgeInsets.all(Dimensions.paddingSizeDefault) : null,
-                  decoration: width > 700 ? BoxDecoration(
-                    color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: Theme.of(context).shadowColor, blurRadius: 5, spreadRadius: 1)],
-                  ) : null,
+                  width: width > 540 ? 500 : width,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.isDesktop(context) ? 40 : 20,
+                    vertical: 26,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: const Color(0xFFE2E9EA).withValues(alpha: 0.8),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 30),
+                      // Header with SeaWala Logo
+                      Center(
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFE1F2E8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.asset(Images.appLogo, width: 44, height: 44),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              getTranslated('create_account', context),
+                              style: poppinsBold.copyWith(
+                                fontSize: 22,
+                                color: isDarkTheme ? Theme.of(context).textTheme.bodyLarge?.color : const Color(0xFF004B4B),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Join SeaWala for fresh seafood at your doorstep',
+                              textAlign: TextAlign.center,
+                              style: poppinsRegular.copyWith(
+                                fontSize: 12.5,
+                                color: const Color(0xFF64777D),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
 
-                      Center(child: Text(
-                        getTranslated('create_account', context),
-                        style: poppinsMedium.copyWith(fontSize: 24, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.6)),
-                      )),
-                      const SizedBox(height: 30),
-
-                      // for first name section
-                      CustomTextFieldWidget(
-                        title: getTranslated('first_name', context),
-                        hintText: 'John',
-                        isShowBorder: true,
-                        controller: _firstNameController,
-                        focusNode: _firstNameFocus,
-                        nextFocus: _lastNameFocus,
-                        inputType: TextInputType.name,
-                        capitalization: TextCapitalization.words,
+                      // First & Last Name side-by-side
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: CustomTextFieldWidget(
+                              title: getTranslated('first_name', context),
+                              hintText: 'John',
+                              isShowBorder: true,
+                              isShowPrefixIcon: true,
+                              prefixIconUrl: Icons.person_outline_rounded,
+                              controller: _firstNameController,
+                              focusNode: _firstNameFocus,
+                              nextFocus: _lastNameFocus,
+                              inputType: TextInputType.name,
+                              capitalization: TextCapitalization.words,
+                              fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: CustomTextFieldWidget(
+                              title: getTranslated('last_name', context),
+                              hintText: 'Doe',
+                              isShowBorder: true,
+                              isShowPrefixIcon: true,
+                              prefixIconUrl: Icons.person_outline_rounded,
+                              controller: _lastNameController,
+                              focusNode: _lastNameFocus,
+                              nextFocus: _emailFocus,
+                              inputType: TextInputType.name,
+                              capitalization: TextCapitalization.words,
+                              fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                      // for last name section
-                      CustomTextFieldWidget(
-                        title: getTranslated('last_name', context),
-                        hintText: 'Doe',
-                        isShowBorder: true,
-                        controller: _lastNameController,
-                        focusNode: _lastNameFocus,
-                        nextFocus: _emailFocus,
-                        inputType: TextInputType.name,
-                        capitalization: TextCapitalization.words,
-                      ),
-                      const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                      // for phone section
+                      // Mobile number section
                       CustomTextFieldWidget(
                         countryDialCode: countryCode,
                         onCountryChanged: (CountryCode value) {
@@ -130,121 +223,141 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         controller: _numberController,
                         inputType: TextInputType.phone,
                         title: getTranslated('mobile_number', context),
+                        fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                      // for email section
+                      // Email section
                       CustomTextFieldWidget(
                         title: getTranslated('email', context),
                         hintText: getTranslated('demo_gmail', context),
                         isShowBorder: true,
+                        isShowPrefixIcon: true,
+                        prefixIconUrl: Icons.mail_outline_rounded,
                         controller: _emailController,
                         focusNode: _emailFocus,
                         nextFocus: config.referEarnStatus! ? _referTextFocus : _passwordFocus,
                         inputType: TextInputType.emailAddress,
+                        fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
-
-                      //refer code
-                      if(config.referEarnStatus!)...[
-                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                          CustomTextFieldWidget(
-                            title: '${ getTranslated('refer_code', context)} (${getTranslated('optional', context)})',
-                            hintText: '',
-                            isShowBorder: true,
-                            controller: _referTextController,
-                            focusNode: _referTextFocus,
-                            nextFocus: _passwordFocus,
-                            inputType: TextInputType.text,
-                          ),
-                          const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                        ],),
+                      // Refer code section (if enabled)
+                      if (config.referEarnStatus!) ...[
+                        CustomTextFieldWidget(
+                          title: '${getTranslated('refer_code', context)} (${getTranslated('optional', context)})',
+                          hintText: 'Enter referral code',
+                          isShowBorder: true,
+                          isShowPrefixIcon: true,
+                          prefixIconUrl: Icons.card_giftcard_rounded,
+                          controller: _referTextController,
+                          focusNode: _referTextFocus,
+                          nextFocus: _passwordFocus,
+                          inputType: TextInputType.text,
+                          fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
+                        ),
+                        const SizedBox(height: Dimensions.paddingSizeLarge),
                       ],
 
-                      // for password section
+                      // Password section
                       CustomTextFieldWidget(
                         title: getTranslated('password', context),
                         hintText: getTranslated('password_hint', context),
                         isShowBorder: true,
                         isPassword: true,
+                        isShowPrefixIcon: true,
+                        prefixIconUrl: Icons.lock_outline_rounded,
                         controller: _passwordController,
                         focusNode: _passwordFocus,
                         nextFocus: _confirmPasswordFocus,
                         isShowSuffixIcon: true,
+                        fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                      // for confirm password section
+                      // Confirm password section
                       CustomTextFieldWidget(
                         title: getTranslated('confirm_password', context),
                         hintText: getTranslated('password_hint', context),
                         isShowBorder: true,
                         isPassword: true,
+                        isShowPrefixIcon: true,
+                        prefixIconUrl: Icons.lock_outline_rounded,
                         controller: _confirmPasswordController,
                         focusNode: _confirmPasswordFocus,
                         isShowSuffixIcon: true,
                         inputAction: TextInputAction.done,
+                        fillColor: isDarkTheme ? null : const Color(0xFFF9FBFA),
                       ),
-                      const SizedBox(height : Dimensions.paddingSizeLarge),
+                      const SizedBox(height: Dimensions.paddingSizeDefault),
 
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          authProvider.registrationErrorMessage!.isNotEmpty
-                              ? CircleAvatar(backgroundColor: Theme.of(context).primaryColor, radius: 5)
-                              : const SizedBox.shrink(),
-                          const SizedBox(width: 8),
+                      // Error message (if any)
+                      if (authProvider.registrationErrorMessage != null && authProvider.registrationErrorMessage!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.error_outline_rounded, size: 16, color: Colors.red),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  authProvider.registrationErrorMessage!,
+                                  style: poppinsRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                          Expanded(child: Text(
-                            authProvider.registrationErrorMessage ?? "",
-                            style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
-                          )),
-
-                        ],
-                      ),
-
-                      // for signup button
-                      const SizedBox(height: 10),
-
+                      // Signup button
+                      const SizedBox(height: 8),
                       CustomButtonWidget(
                         isLoading: authProvider.isLoading,
                         buttonText: getTranslated('signup', context),
-                        onPressed: ()=> _onSignUpPress(config),
+                        borderRadius: 25,
+                        height: 48,
+                        backgroundColor: const Color(0xFF004B4B),
+                        textStyle: poppinsBold.copyWith(fontSize: 15, color: Colors.white),
+                        onPressed: () => _onSignUpPress(config),
                       ),
 
-                      // for already an account
-                      const SizedBox(height: 11),
-
-                      InkWell(
-                        onTap: () {
-                          RouteHelper.getLoginRoute(action: RouteAction.pushReplacement);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Text(
-                              getTranslated('already_have_account', context),
-                              style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).hintColor.withValues(alpha: 0.6)),
+                      // Already have an account? Login
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            getTranslated('already_have_account', context),
+                            style: poppinsRegular.copyWith(
+                              fontSize: 13,
+                              color: const Color(0xFF64777D),
                             ),
-                            const SizedBox(width: Dimensions.paddingSizeSmall),
-
-                            Text(
+                          ),
+                          const SizedBox(width: 6),
+                          InkWell(
+                            onTap: () {
+                              RouteHelper.getLoginRoute(action: RouteAction.pushReplacement);
+                            },
+                            child: Text(
                               getTranslated('login', context),
-                              style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.6)),
+                              style: poppinsBold.copyWith(
+                                fontSize: 13,
+                                color: const Color(0xFF004B4B),
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
-
-                          ]),
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
 
-                ResponsiveHelper.isDesktop(context) ? const SizedBox(height: 50,) : const SizedBox(),
-
+                ResponsiveHelper.isDesktop(context) ? const SizedBox(height: 50) : const SizedBox(height: 20),
 
               ])),
             )),

@@ -167,7 +167,13 @@ class ConfigModel {
     _minimumOrderValue = minimumOrderValue;
     _selfPickup = selfPickup;
     _baseUrls = baseUrls;
-    _currencySymbol = currencySymbol;
+    if (currencySymbol == 'R' || currencySymbol == 'Rs' || currencySymbol == 'RS' || currencySymbol == 'INR' || currencySymbol == null || currencySymbol.trim().isEmpty) {
+      _currencySymbol = '₹';
+      _currencySymbolPosition = 'left';
+    } else {
+      _currencySymbol = currencySymbol;
+      _currencySymbolPosition = currencySymbolPosition;
+    }
     _deliveryCharge = deliveryCharge;
     _cashOnDelivery = cashOnDelivery;
     _digitalPayment = digitalPayment;
@@ -177,7 +183,6 @@ class ConfigModel {
     _privacyPolicy = privacyPolicy;
     _emailVerification = emailVerification;
     _phoneVerification = phoneVerification;
-    _currencySymbolPosition = currencySymbolPosition;
     _country = country;
     _deliveryManagement = deliveryManagement;
     _playStoreConfig = playStoreConfig;
@@ -251,7 +256,17 @@ class ConfigModel {
   double? get minimumOrderValue => _minimumOrderValue;
   int? get selfPickup => _selfPickup;
   BaseUrls? get baseUrls => _baseUrls;
-  String? get currencySymbol => _currencySymbol;
+  String? get currencySymbol {
+    if (_currencySymbol == 'R' ||
+        _currencySymbol == 'Rs' ||
+        _currencySymbol == 'RS' ||
+        _currencySymbol == 'INR' ||
+        _currencySymbol == null ||
+        _currencySymbol!.trim().isEmpty) {
+      return '₹';
+    }
+    return _currencySymbol;
+  }
   double? get deliveryCharge => _deliveryCharge;
   bool? get cashOnDelivery => _cashOnDelivery;
   String? get digitalPayment => _digitalPayment;
@@ -261,7 +276,17 @@ class ConfigModel {
   TermsAndConditions? get privacyPolicy=> _privacyPolicy;
   bool? get emailVerification => _emailVerification;
   bool? get phoneVerification => _phoneVerification;
-  String? get currencySymbolPosition => _currencySymbolPosition;
+  String? get currencySymbolPosition {
+    if (_currencySymbol == 'R' ||
+        _currencySymbol == 'Rs' ||
+        _currencySymbol == 'RS' ||
+        _currencySymbol == 'INR' ||
+        _currencySymbol == '₹' ||
+        _currencySymbolPosition == null) {
+      return 'left';
+    }
+    return _currencySymbolPosition;
+  }
   String? get country => _country;
   DeliveryManagement? get deliveryManagement => _deliveryManagement;
   PlayStoreConfig? get playStoreConfig => _playStoreConfig;
@@ -335,7 +360,14 @@ class ConfigModel {
     _baseUrls = json['base_urls'] != null
         ? BaseUrls.fromJson(json['base_urls'])
         : null;
-    _currencySymbol = json['currency_symbol'];
+    final rawSymbol = json['currency_symbol']?.toString();
+    if (rawSymbol == 'R' || rawSymbol == 'Rs' || rawSymbol == 'RS' || rawSymbol == 'INR' || rawSymbol == null || rawSymbol.trim().isEmpty) {
+      _currencySymbol = '₹';
+      _currencySymbolPosition = 'left';
+    } else {
+      _currencySymbol = rawSymbol;
+      _currencySymbolPosition = json['currency_symbol_position'];
+    }
     _deliveryCharge = double.parse('${json['delivery_charge']}');
     _cashOnDelivery = '${json['cash_on_delivery']}'.contains('true');
     _digitalPayment = json['digital_payment'];
@@ -356,7 +388,9 @@ class ConfigModel {
         : null;
     _emailVerification = json['email_verification'];
     _phoneVerification = json['phone_verification'];
-    _currencySymbolPosition = json['currency_symbol_position'];
+    if (_currencySymbol != '₹' && json['currency_symbol_position'] != null) {
+      _currencySymbolPosition = json['currency_symbol_position'];
+    }
     _country = json['country'];
     _deliveryManagement = json['delivery_management'] != null
         ? DeliveryManagement.fromJson(json['delivery_management'])

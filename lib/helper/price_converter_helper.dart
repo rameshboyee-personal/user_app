@@ -13,13 +13,18 @@ class PriceConverterHelper {
         price = price! - ((discount / 100) * price);
       }
     }
-    ConfigModel config = Provider.of<SplashProvider>(context, listen: false).configModel!;
-    bool isLeft = config.currencySymbolPosition == 'left';
-    return !isLeft ?  '${price!.toStringAsFixed(config.decimalPointSettings!).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'' ${config.currencySymbol}'
-        : '${config.currencySymbol} ''${price!.toStringAsFixed(config.decimalPointSettings!).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
-        ;
+    ConfigModel? config = Provider.of<SplashProvider>(context, listen: false).configModel;
+    String symbol = config?.currencySymbol ?? '₹';
+    if (symbol == 'R' || symbol == 'Rs' || symbol == 'RS' || symbol == 'INR' || symbol.trim().isEmpty) {
+      symbol = '₹';
+    }
+    bool isLeft = symbol == '₹' || (config?.currencySymbolPosition ?? 'left') == 'left';
+    int decimalPoints = config?.decimalPointSettings ?? 2;
+    String formattedPrice = (price ?? 0).toStringAsFixed(decimalPoints).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
+    return isLeft ? '$symbol$formattedPrice' : '$formattedPrice $symbol';
   }
 
   static double? convertWithDiscount(double? price, double? discount, String? discountType, {double? maxDiscount}) {
@@ -56,7 +61,11 @@ class PriceConverterHelper {
   }
 
   static String percentageCalculation(BuildContext context, double? discount, String? discountType) {
-    return '$discount${discountType == 'percent' ? '%' : '${Provider.of<SplashProvider>(context, listen: false).configModel!.currencySymbol}'} OFF';
+    String symbol = Provider.of<SplashProvider>(context, listen: false).configModel?.currencySymbol ?? '₹';
+    if (symbol == 'R' || symbol == 'Rs' || symbol == 'RS' || symbol == 'INR' || symbol.trim().isEmpty) {
+      symbol = '₹';
+    }
+    return '$discount${discountType == 'percent' ? '%' : ' $symbol'} OFF';
   }
 
     static ({double? discount, DiscountType type}) convertProductDiscount({required double? price, required  double? discount, required  String? discountType, required  CategoryDiscount? categoryDiscount}) {
